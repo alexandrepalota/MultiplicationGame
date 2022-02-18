@@ -80,7 +80,10 @@ class ChallengeComponent extends Component {
                         Your guess:
                         <input type="number" min="0" name="guess" value={this.state.guess} onChange={this.handleChange} />
                     </label>
+                    <br />
+                    <button type="submit">Submit</button>
                 </form>
+                <h4>{this.state.message}</h4>
             </div>
         )
     }
