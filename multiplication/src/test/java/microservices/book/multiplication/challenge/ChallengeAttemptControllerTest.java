@@ -14,9 +14,12 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ExtendWith(SpringExtension.class)
@@ -35,6 +38,9 @@ public class ChallengeAttemptControllerTest {
 
     @Autowired
     private JacksonTester<ChallengeAttempt> jsonResultAttempt;
+
+    @Autowired
+    private JacksonTester<List<ChallengeAttempt>> jsonResultAttemptList;
 
     @Test
     void postValidResult() throws Exception {
@@ -67,6 +73,30 @@ public class ChallengeAttemptControllerTest {
 
         // then
         then(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void getUserStats() throws Exception {
+        // given
+        User user = new User("john_doe");
+        ChallengeAttempt attempt1 = new ChallengeAttempt(1L, user, 50, 70, 3500, true);
+        ChallengeAttempt attempt2 = new ChallengeAttempt(2L, user, 20, 10, 210, false);
+        List<ChallengeAttempt> recentAttempts = List.of(attempt1, attempt2);
+        given(challengeService
+                .getStatsForUser("john_doe"))
+                .willReturn(recentAttempts);
+
+        // when
+        MockHttpServletResponse response = mvc.perform(
+                        get("/attempts").param("alias", "john_doe"))
+                .andReturn().getResponse();
+
+        // then
+        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        then(response.getContentAsString()).isEqualTo(
+                jsonResultAttemptList.write(
+                        recentAttempts
+                ).getJson());
     }
 
 }
