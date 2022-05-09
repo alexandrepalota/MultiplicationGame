@@ -1,16 +1,17 @@
-class ApiClient {
+class ChallengesApiClient {
 
     static SERVER_URL = 'http://localhost:8080';
     static GET_CHALLENGE = '/challenges/random';
     static POST_RESULT = '/attempts'
     static GET_ATTEMPTS_BY_ALIAS = '/attempts?alias=';
+    static GET_USERS_BY_IDS = '/users';
 
     static challenge() {
-        return fetch(ApiClient.SERVER_URL + ApiClient.GET_CHALLENGE);
+        return fetch(ChallengesApiClient.SERVER_URL + ChallengesApiClient.GET_CHALLENGE);
     }
 
     static sendGuess(user, a, b, guess) {
-        return fetch(ApiClient.SERVER_URL + ApiClient.POST_RESULT, {
+        return fetch(ChallengesApiClient.SERVER_URL + ChallengesApiClient.POST_RESULT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -25,8 +26,12 @@ class ApiClient {
     }
 
     static getAttempts(userAlias) {
-        return fetch(ApiClient.SERVER_URL + ApiClient.GET_ATTEMPTS_BY_ALIAS + userAlias);
+        return fetch(ChallengesApiClient.SERVER_URL + ChallengesApiClient.GET_ATTEMPTS_BY_ALIAS + userAlias);
+    }
+
+    static getUsers(userIds) {
+        return fetch(ChallengesApiClient.SERVER_URL + ChallengesApiClient.GET_USERS_BY_IDS + '/' + userIds.join(','));
     }
 }
 
-export default ApiClient;
+export default ChallengesApiClient;

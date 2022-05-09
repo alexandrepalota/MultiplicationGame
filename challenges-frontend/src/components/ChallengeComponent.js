@@ -1,6 +1,7 @@
 import { Component } from "react";
-import ApiClient from "../clients/ApiClient";
+import ChallengesApiClient from "../clients/ChallengesApiClient";
 import LastAttemptComponent from "./LastAttemptsComponent";
+import LeaderBoardComponent from "./LeaderBoardComponent";
 
 class ChallengeComponent extends Component {
 
@@ -24,7 +25,7 @@ class ChallengeComponent extends Component {
     }
 
     refreshChallenge() {
-        ApiClient.challenge().then(
+        ChallengesApiClient.challenge().then(
             res => {
                 if (res.ok) {
                     res.json().then(json => {
@@ -49,7 +50,7 @@ class ChallengeComponent extends Component {
 
     handleSubmintResult(event) {
         event.preventDefault();
-        ApiClient.sendGuess(this.state.user, this.state.a, this.state.b, this.state.guess)
+        ChallengesApiClient.sendGuess(this.state.user, this.state.a, this.state.b, this.state.guess)
             .then(res => {
                 if (res.ok) {
                     res.json().then(json => {
@@ -74,7 +75,7 @@ class ChallengeComponent extends Component {
     }
 
     updateLastAttempts(userAlias) {
-        ApiClient.getAttempts(userAlias).then(res => {
+        ChallengesApiClient.getAttempts(userAlias).then(res => {
             if (res.ok) {
                 let attempts = [];
                 res.json().then(data => {
@@ -113,6 +114,7 @@ class ChallengeComponent extends Component {
                 </form>
                 <h4>{this.state.message}</h4>
                 {this.state.lastAttempts.length > 0 && <LastAttemptComponent lastAttempts={this.state.lastAttempts} />}
+                <LeaderBoardComponent />
             </div>
         );
     }
